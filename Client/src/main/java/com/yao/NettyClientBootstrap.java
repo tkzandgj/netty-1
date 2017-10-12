@@ -1,6 +1,6 @@
 package com.yao;
 
-import com.yao.module.AskMsg;
+import com.yao.module.AckMsg;
 import com.yao.module.AskParams;
 import com.yao.module.Constants;
 import com.yao.module.LoginMsg;
@@ -64,13 +64,15 @@ public class NettyClientBootstrap {
         Constants.setClientId("001");
         NettyClientBootstrap bootstrap=new NettyClientBootstrap(9999,"127.0.0.1");
 
+        // 发送登录请求
         LoginMsg loginMsg=new LoginMsg();
         loginMsg.setPassword("admin123");
         loginMsg.setUserName("admin");
         bootstrap.socketChannel.writeAndFlush(loginMsg);
+
         while (true){
             TimeUnit.SECONDS.sleep(3);
-            AskMsg askMsg=new AskMsg();
+            AckMsg askMsg=new AckMsg();
             AskParams askParams=new AskParams();
             askParams.setAuth("authToken");
             askMsg.setParams(askParams);
