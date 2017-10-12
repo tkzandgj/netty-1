@@ -18,6 +18,8 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,6 +27,8 @@ import java.util.concurrent.TimeUnit;
  * Created by yaozb on 15-4-11.
  */
 public class NettyClientBootstrap {
+    private static final Logger logger = LoggerFactory.getLogger(NettyClientBootstrap.class);
+
     private int port;
     private String host;
     private SocketChannel socketChannel;
@@ -53,16 +57,16 @@ public class NettyClientBootstrap {
         ChannelFuture future =bootstrap.connect(host,port).sync();
         if (future.isSuccess()) {
             socketChannel = (SocketChannel)future.channel();
-            System.out.println("connect server  成功---------");
+            logger.info("connect server  成功---------");
         }
     }
     public static void main(String[]args) throws InterruptedException {
         Constants.setClientId("001");
-        NettyClientBootstrap bootstrap=new NettyClientBootstrap(9999,"localhost");
+        NettyClientBootstrap bootstrap=new NettyClientBootstrap(9999,"127.0.0.1");
 
         LoginMsg loginMsg=new LoginMsg();
-        loginMsg.setPassword("yao");
-        loginMsg.setUserName("robin");
+        loginMsg.setPassword("admin123");
+        loginMsg.setUserName("admin");
         bootstrap.socketChannel.writeAndFlush(loginMsg);
         while (true){
             TimeUnit.SECONDS.sleep(3);
