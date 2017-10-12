@@ -45,6 +45,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<BaseMsg> {
      */
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, BaseMsg baseMsg) throws Exception {
+        logger.info("client read server message-----------");
         MsgType msgType=baseMsg.getType();
         switch (msgType){
             case LOGIN:{
@@ -52,15 +53,17 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<BaseMsg> {
                 LoginMsg loginMsg=new LoginMsg();
                 loginMsg.setPassword("admin");
                 loginMsg.setUserName("admin123");
+                logger.info("client send to server login request----------");
                 channelHandlerContext.writeAndFlush(loginMsg);
             }break;
             case PING:{
                 logger.info("receive ping from server----------");
             }break;
-            case ASK:{
+            case ACK:{
                 ReplyClientBody replyClientBody=new ReplyClientBody("client info **** !!!");
                 ReplyMsg replyMsg=new ReplyMsg();
                 replyMsg.setBody(replyClientBody);
+                logger.info("client send to server ack message------");
                 channelHandlerContext.writeAndFlush(replyMsg);
             }break;
             case REPLY:{
