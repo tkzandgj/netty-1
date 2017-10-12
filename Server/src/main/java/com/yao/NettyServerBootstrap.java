@@ -1,6 +1,6 @@
 package com.yao;
 
-import com.yao.module.AskMsg;
+import com.yao.module.AckMsg;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -57,7 +57,8 @@ public class NettyServerBootstrap {
         while (true){
             SocketChannel channel=(SocketChannel)NettyChannelMap.get("001");
             if(channel!=null){
-                AskMsg askMsg=new AskMsg();
+                // 如果有连接的话，针对这个链接回复一个ACK消息
+                AckMsg askMsg=new AckMsg();
                 channel.writeAndFlush(askMsg);
             }
             TimeUnit.SECONDS.sleep(1000);
