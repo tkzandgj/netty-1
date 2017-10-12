@@ -26,6 +26,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<BaseMsg> {
 
     /**
      * Channel没有连接到远程节点的时候调用
+     * 删除集合中的这个链接信息
      * @param ctx
      * @throws Exception
      */
@@ -54,6 +55,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<BaseMsg> {
             if(NettyChannelMap.get(baseMsg.getClientId())==null){
                 //说明未登录，或者连接断了，服务器向客户端发起登录请求，让客户端重新登录
                 LoginMsg loginMsg=new LoginMsg();
+                logger.info("server send to client login request......");
                 channelHandlerContext.channel().writeAndFlush(loginMsg);
             }
         }
@@ -61,16 +63,18 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<BaseMsg> {
             case PING:{
                 PingMsg pingMsg=(PingMsg)baseMsg;
                 PingMsg replyPing=new PingMsg();
-                // 获取连接
+                // 获取连接  重新发送PING消息
+                logger.info("server send to client ping message......");
                 NettyChannelMap.get(pingMsg.getClientId()).writeAndFlush(replyPing);
             }break;
-            case ASK:{
+            case ACK:{
                 //收到客户端的请求
-                AskMsg askMsg=(AskMsg)baseMsg;
+                AckMsg askMsg=(AckMsg)baseMsg;
                 if("authToken".equals(askMsg.getParams().getAuth())){
                     ReplyServerBody replyBody=new ReplyServerBody("server info $$$$ !!!");
                     ReplyMsg replyMsg=new ReplyMsg();
                     replyMsg.setBody(replyBody);
+                    logger.info("server send to client ack message......");
                     NettyChannelMap.get(askMsg.getClientId()).writeAndFlush(replyMsg);
                 }
             }break;
